@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/utils/supabase/server";
 import { useState } from "react";
 import Image from "next/image";
+import { useRouter } from 'next/navigation';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -26,6 +27,7 @@ export const success = {
 };
 
 export function AuthIn() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [signupEmail, setSignupEmail] = useState("");
   const [signupPassword, setSignupPassword] = useState("");
@@ -45,6 +47,7 @@ export function AuthIn() {
       );
     } else {
       toast.success("Success: You have successfully logged in!");
+      router.push('/feed'); 
     }
   }
 
