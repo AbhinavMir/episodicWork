@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
-
+import Link from "next/link";
 export function Profile() {
   const [profile, setProfile] = useState({
     name: "",
@@ -117,6 +117,12 @@ export function Profile() {
       </CardContent>
       <CardFooter>
         <Button onClick={saveProfile}>Save</Button>
+      </CardFooter>
+      <CardFooter>
+        View your public profile
+        <Link href={`/${profile.username}`}>
+          <Button>Here</Button>
+          </Link>
       </CardFooter>
     </Card>
   );
