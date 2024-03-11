@@ -21,7 +21,6 @@ export function ProfileCard({ user }: { user: UserType }) {
     <Card className="w-full max-w-sm">
       <div className="flex flex-col items-center gap-2 p-6">
         <div className="text-lg font-bold">{user.name}</div>
-        <div className="text-sm text-center text-gray-500 dark:text-gray-400">{user.role}</div>
       </div>
       <CardContent className="p-6 border-t border-gray-100 dark:border-gray-800">
         <dl className="grid gap-2 text-sm">

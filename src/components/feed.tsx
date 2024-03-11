@@ -31,7 +31,7 @@ export function Feed() {
             const isRecentlyUpdated = last_updated >= oneWeekAgo;
 
             return (
-              <Link key={stories.id} href={`/feed/${stories.id}`}>
+              <Link key={stories.id} href={`/story/${stories.storyurl}`}>
                 <div className="flex flex-row items-center gap-4 p-4 rounded-sm">
                   <div className="flex-1">
                     <div className="flex items-center">
