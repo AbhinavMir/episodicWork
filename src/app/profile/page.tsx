@@ -18,7 +18,9 @@ export default function ProfilePage() {
   return (
     <div>
       <Navbar />
-      <Profile />
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
+        <Profile />
+      </div>
     </div>
   );
 }
