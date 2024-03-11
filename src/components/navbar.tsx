@@ -23,8 +23,6 @@ export function Navbar() {
     checkUser();
   }, []);
 
-  console.log(loggedIn);
-
   async function signOut() {
     await supabase.auth.signOut();
     setLoggedIn(false);
