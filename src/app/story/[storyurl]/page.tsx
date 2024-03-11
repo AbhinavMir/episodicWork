@@ -50,20 +50,20 @@ export default function Page({ params }: { params: { storyurl: string } }) {
   return (
     <div>
       <Navbar />
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
-      {loading ? (
-        <LoadingSpinner />
-      ) : (
-        chapters.map((chapter, index) => (
-          <ChapterCard
-            key={index}
-            title={chapter.title}
-            description={chapter.content}
-            chapter={`Chapter ${chapter.chapter_number}`}
-          />
-        ))
-      )}
-    </div>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
+        {loading ? (
+          <LoadingSpinner />
+        ) : (
+          chapters.map((chapter, index) => (
+            <ChapterCard
+              key={index}
+              title={chapter.title}
+              description={chapter.content}
+              chapter={`Chapter ${chapter.chapter_number}`}
+            />
+          ))
+        )}
+      </div>
     </div>
   );
 }
