@@ -71,7 +71,7 @@ export function Profile() {
   return (
     <Card className="w-full max-w-3xl">
       <CardHeader className="space-y-1">
-        <CardTitle>Profile</CardTitle>
+        <CardTitle>Hi, {profile.username}</CardTitle>
         <CardDescription>Update your profile information.</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
