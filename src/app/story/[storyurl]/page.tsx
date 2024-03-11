@@ -1,14 +1,10 @@
 "use client";
 
-import { supabase } from "@/utils/supabase/server";
 import { useEffect, useState } from "react";
-import StoryCard from "@/components/story-card";
-import { Navbar } from "@/components/navbar";
+import { supabase } from "@/utils/supabase/server";
 import { LoadingSpinner } from "@/components/ui/spinner";
-import Image from "next/image";
-import { ProfileCard } from "@/components/profile-card";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { ChapterCard } from "@/components/chapter-card";
+import { Navbar } from "@/components/navbar";
 
 interface Chapter {
   title: string;
@@ -37,8 +33,10 @@ export default function Page({ params }: { params: { storyurl: string } }) {
 
         if (error) throw error;
         if (data && data.chapters) {
-          setChapters(data.chapters);
+          const sortedChapters = data.chapters.sort((a, b) => a.chapter_number - b.chapter_number);
+          setChapters(sortedChapters);
         }
+        
       } catch (error) {
         console.error(error);
       } finally {
@@ -51,17 +49,21 @@ export default function Page({ params }: { params: { storyurl: string } }) {
 
   return (
     <div>
+      <Navbar />
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
       {loading ? (
         <LoadingSpinner />
       ) : (
         chapters.map((chapter, index) => (
-          <div key={index}>
-            <h2>{chapter.title}</h2>
-            <p>{chapter.content}</p>
-            <p>Chapter: {chapter.chapter_number}</p>
-          </div>
+          <ChapterCard
+            key={index}
+            title={chapter.title}
+            description={chapter.content}
+            chapter={`Chapter ${chapter.chapter_number}`}
+          />
         ))
       )}
+    </div>
     </div>
   );
 }
