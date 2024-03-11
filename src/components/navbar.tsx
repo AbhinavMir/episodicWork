@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   PopoverTrigger,
+  
   PopoverContent,
   Popover,
 } from "@/components/ui/popover";
@@ -53,13 +54,7 @@ export function Navbar() {
           <Button className="w-8 h-8 rounded-full" size="icon" variant="ghost">
             <Popover>
               <PopoverTrigger asChild>
-                <div className="w-8 h-8 rounded-full border border-white overflow-hidden">
-                  <Image
-                    src="/avatar.png"
-                    alt="Avatar"
-                    width={640}
-                    height={640}
-                  />
+                <div className="w-8 h-8 rounded-full border border-white overflow-hidden" style={{background: 'linear-gradient(to right, #454b4e, #4DAB9A)'}}>
                 </div>
               </PopoverTrigger>
               <PopoverContent className="flex flex-col items-center justify-center">

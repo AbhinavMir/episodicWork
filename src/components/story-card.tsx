@@ -4,7 +4,6 @@ import { Avatar } from "@/components/ui/avatar";
 export default function StoryCard({ story, authorName }: { story: any; authorName: string }) {
 
   const { title, description, author_id, name } = story;
-  console.log(story);
 
   return (
     <Card>
