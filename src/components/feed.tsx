@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import { supabase } from "@/utils/supabase/server";
 
 export function Feed() {
-  const [chapters, setChapters] = useState<any[] | null>(null);
+  const [storiess, setChapters] = useState<any[] | null>(null);
 
   useEffect(() => {
     const fetchChapters = async () => {
@@ -20,24 +20,32 @@ export function Feed() {
     fetchChapters();
   }, []);
 
-  console.log(chapters);
+  console.log(storiess);
 
  return (
-    <div className="flex flex-col gap-4">
-      {chapters?.map((chapter) => (
-        <Link key={chapter.id} href={`/feed/${chapter.id}`}>
-          {/* <a className="flex flex-row items-center gap-4 p-4 border-b border-gray-200 dark:border-gray-800"> */}
-            <div className="w-16 h-16 bg-gray-200 dark:bg-gray-800 rounded-lg" />
-            <div className="flex-1">
-              <h2 className="text-lg font-semibold">{chapter.title}</h2>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {chapter.description}
-              </p>
-            </div>
-            <ChevronRightIcon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
-          {/* </a> */}
-        </Link>
-      ))}
+    <div className="flex flex-col gap-4 p-4">
+        {storiess?.map((stories) => {
+            const last_updated = new Date(stories.last_updated);
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            const isRecentlyUpdated = last_updated >= oneWeekAgo;
+
+            return (
+              <Link key={stories.id} href={`/feed/${stories.id}`}>
+                <div className="flex flex-row items-center gap-4 p-4 rounded-sm">
+                  <div className="flex-1">
+                    <div className="flex items-center">
+                      <h2 className="text-lg font-semibold">{stories.title}</h2>
+                      {isRecentlyUpdated && <div className="bg-blue-900 rounded p-1 inline-block text-xs ml-2">Recently Updated</div>}
+                    </div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {stories.description}
+                    </p>
+                  </div>
+                </div>
+              </Link>
+            );
+        })}
     </div>
   );
 }

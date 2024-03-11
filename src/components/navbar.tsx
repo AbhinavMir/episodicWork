@@ -31,7 +31,7 @@ export function Navbar() {
   }
 
   return (
-    <nav className="flex flex-row w-full gap-4 items-center px-4 py-4 border-b border-gray-200 bg-gray-100 dark:bg-black">
+    <nav className="flex flex-row w-full gap-3 items-center px-3 py-3 border-b border-gray-200 bg-gray-100 dark:bg-black">
       <Link href="/feed">
           <Button
             className="font-semibold text-base md:text-sm"
@@ -41,13 +41,6 @@ export function Navbar() {
             For You
           </Button>
       </Link>
-      <Button
-        className="font-semibold text-base md:text-sm"
-        id="dashboard"
-        variant="ghost"
-      >
-        Dashboard
-      </Button>
       <div className="flex-1" />
       <Button className="w-8 h-8 rounded-full" size="icon" variant="ghost">
         {loggedIn ? (
