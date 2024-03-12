@@ -59,39 +59,40 @@ export function ChooseStoryChapter() {
 
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '300px' }}>
-    <div className="mr-4"> {/* Add right margin to the first dropdown */}  
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button className="h-8 w-8 rounded-full" size="sm" variant="ghost">
-          <div>{selectedStory}</div>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>Choose Story</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        {stories.map((story) => (
-          <DropdownMenuItem onClick={() => setSelectedStory(story.title)}>{story.title}</DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
-    </div>
+      <div className="mr-4"> {/* Add right margin to the first dropdown */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className="h-8 w-8 rounded-full" size="sm" variant="ghost">
+              <div>{selectedStory}</div>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>Choose Story</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {stories.map((story, index) => (
+              <DropdownMenuItem key={index} onClick={() => setSelectedStory(story.title)}>{story.title}</DropdownMenuItem>
+            ))}
+
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
       <div>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button className="h-8 w-8 rounded-full" size="sm" variant="ghost">
-            <div>Toggle</div>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Billing</DropdownMenuItem>
-          <DropdownMenuItem>Team</DropdownMenuItem>
-          <DropdownMenuItem>Subscription</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className="h-8 w-8 rounded-full" size="sm" variant="ghost">
+              <div>Toggle</div>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Profile</DropdownMenuItem>
+            <DropdownMenuItem>Billing</DropdownMenuItem>
+            <DropdownMenuItem>Team</DropdownMenuItem>
+            <DropdownMenuItem>Subscription</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </div>
   );
 }
