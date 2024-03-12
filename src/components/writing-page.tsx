@@ -16,45 +16,66 @@ import { Navbar } from "@/components/navbar";
 export function ChooseStoryChapter() {
 
   const [stories, setStories] = useState<any[]>([]);
+  const [selectedStory, setSelectedStory] = useState<any>("Story");
+  const [selectedChapter, setSelectedChapter] = useState<any>("Chapter");
+
   useEffect(() => {
+
+    const setStateForStory = (story: string) => {
+      setSelectedStory(story);
+    }
     const fetchMyStories = async () => {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) {
         setStories([]);
         return;
       }
+      const { data: authorData } = await supabase
+        .from('authors')
+        .select('author_id')
+        .eq('user_id', userData.user.id)
+        .single();
 
-      const { data } = await supabase
+      const { data: storiesData } = await supabase
         .from('stories')
         .select('*')
-        .eq('author_id', userData.user.id);
+        .eq('author_id', authorData?.author_id);
 
-      setStories(data || []);
+
+      setStories(storiesData || []);
     };
+
+    const fetchChaptersForStory = async (storyId: string) => {
+      const { data: chapterData } = await supabase
+        .from('chapters')
+        .select('*')
+        .eq('story_id', storyId);
+
+      console.log(chapterData);
+    }
 
     fetchMyStories();
   }, []);
 
-  console.log(stories);
-  
   return (
-    <div>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button className="h-8 w-8 rounded-full" size="sm" variant="ghost">
-            <div>Toggle</div>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem>Profile</DropdownMenuItem>
-          <DropdownMenuItem>Billing</DropdownMenuItem>
-          <DropdownMenuItem>Team</DropdownMenuItem>
-          <DropdownMenuItem>Subscription</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      /
+    <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '300px' }}>
+    <div className="mr-4"> {/* Add right margin to the first dropdown */}  
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button className="h-8 w-8 rounded-full" size="sm" variant="ghost">
+          <div>{selectedStory}</div>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuLabel>Choose Story</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        {stories.map((story) => (
+          <DropdownMenuItem onClick={() => setSelectedStory(story.title)}>{story.title}</DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+    </div>
+      <div>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button className="h-8 w-8 rounded-full" size="sm" variant="ghost">
@@ -71,13 +92,14 @@ export function ChooseStoryChapter() {
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
+    </div>
   );
 }
 
 export function WritingPage() {
   return (
     <div className="flex flex-col h-screen">
-      
+
       <Navbar />
       <header className="p-4 border-b">
         <div className="container flex items-center gap-4">
@@ -88,7 +110,7 @@ export function WritingPage() {
           <h1 className="text-lg font-bold">
             <input
               type="text"
-              className="w-full p-2 text-sm rounded border bg-black shadow-inner focus:outline-none"
+              className="w-2/3 p-2 text-sm rounded border bg-black shadow-inner focus:outline-none"
               defaultValue="hey"
             />
           </h1>
