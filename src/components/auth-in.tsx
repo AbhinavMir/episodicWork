@@ -35,6 +35,19 @@ export function AuthIn() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  async function signInWithMagicLink() {
+    const { data, error } = await supabase.auth.signInWithOtp({
+      email:  email,
+      options: {
+        // set this to false if you do not want the user to be automatically signed up
+        shouldCreateUser: false,
+        emailRedirectTo: "https://episodic.work/feed/"
+      },
+    })
+
+    toast.success("Please check your email for the magic link!");
+  }
+
   async function signInWithEmail() {
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
@@ -112,6 +125,14 @@ export function AuthIn() {
                   Login
                 </Button>
 
+                <Button
+                  className="w-full"
+                  onClick={signInWithMagicLink}
+                  type="button"
+                >
+                  Login with Magic Link
+                </Button> 
+          
                 <div className="space-y-4">
                   <Button className="w-full" onClick={resetPassword}>
                     Reset Password

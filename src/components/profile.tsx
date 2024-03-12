@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-toastify";
 import Link from "next/link";
+import "react-toastify/dist/ReactToastify.css";
+
 export function Profile() {
   const [profile, setProfile] = useState({
     name: "",
@@ -20,6 +22,12 @@ export function Profile() {
     bio: "",
     username: "",
   });
+
+  const [passwords, setPasswords] = useState({
+    oldPassword: "",
+    newPassword: "",
+  });
+
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -68,6 +76,26 @@ export function Profile() {
     }
   };
 
+  console.log(passwords.oldPassword, passwords.newPassword);
+  const changePassword = async () => {
+    console.log("changePassword");
+    const {
+      data: { user },
+      error: getUserError,
+    } = await supabase.auth.getUser();
+    if (user) {
+      const { error } = await supabase.auth.updateUser({
+        password: passwords.newPassword,
+      });
+      if (!error) {
+        console.log("Password updated successfully");
+        toast.success("Password updated successfully");
+      } else {
+        toast.error("Failed to update password: " + error.message);
+      }
+    }
+  }
+
   return (
     <Card className="w-full max-w-3xl">
       <CardHeader className="space-y-1">
@@ -114,6 +142,67 @@ export function Profile() {
             }
           />
         </div>
+        <div className="space-y-2">
+          <Label htmlFor="oldPassword">Old Password</Label>
+          <Input
+            id="oldPassword"
+            type="password"
+            value={passwords.oldPassword}
+            onChange={(e) => setPasswords({ ...passwords, oldPassword: e.target.value })}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="newPassword">New Password</Label>
+          <Input
+            id="newPassword"
+            type="password"
+            value={passwords.newPassword}
+            onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
+          />
+        </div>
+
+        <Button onClick={changePassword}>Change Password</Button>
+
+        {/*    <div style={{ position: 'relative' }}>
+          <div className="space-y-2">
+            <Label htmlFor="oldPassword">Old Password</Label>
+            <Input
+              id="oldPassword"
+              type="password"
+              value={passwords.oldPassword}
+              onChange={(e) => setPasswords({ ...passwords, oldPassword: e.target.value })}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="newPassword">New Password</Label>
+            <Input
+              id="newPassword"
+              type="password"
+              value={passwords.newPassword}
+              onChange={(e) => setPasswords({ ...passwords, newPassword: e.target.value })}
+            />
+          </div>
+
+          <Button onClick={changePassword}>Change Password</Button>
+
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            backgroundColor: 'rgba(128, 128, 128, 0.5)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            color: 'white',
+            fontSize: '1.5em',
+            fontWeight: 'bold',
+            textAlign: 'center'
+          }}>
+            Doesn't work yet
+          </div>
+        </div> */}
       </CardContent>
       <CardFooter>
         <Button onClick={saveProfile}>Save</Button>
@@ -122,7 +211,7 @@ export function Profile() {
         View your public profile
         <Link href={`/${profile.username}`}>
           <Button>Here</Button>
-          </Link>
+        </Link>
       </CardFooter>
     </Card>
   );
