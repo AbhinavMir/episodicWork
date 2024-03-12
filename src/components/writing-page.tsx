@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/utils/supabase/server";
 import { useState, useEffect } from 'react';
+import { Navbar } from "@/components/navbar";
 
 export function ChooseStoryChapter() {
 
@@ -34,7 +35,8 @@ export function ChooseStoryChapter() {
     fetchMyStories();
   }, []);
 
-
+  console.log(stories);
+  
   return (
     <div>
       <DropdownMenu>
@@ -75,6 +77,8 @@ export function ChooseStoryChapter() {
 export function WritingPage() {
   return (
     <div className="flex flex-col h-screen">
+      
+      <Navbar />
       <header className="p-4 border-b">
         <div className="container flex items-center gap-4">
           <Button className="rounded-full" size="icon" variant="ghost">

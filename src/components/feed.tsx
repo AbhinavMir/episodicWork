@@ -12,13 +12,18 @@ export function Feed() {
       let { data, error } = await supabase
         .from('stories')
         .select('*');
-
+  
       if (error) console.log('error', error);
-      else setChapters(data);
+      else if (data) {
+        const filteredData = data.filter(story => story.description && story.chapters?.length > 0);
+        setChapters(filteredData);
+      }
     };
-
+  
     fetchChapters();
   }, []);
+  
+  
 
   console.log(storiess);
 
