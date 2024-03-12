@@ -14,26 +14,26 @@ import { useState, useEffect } from 'react';
 
 export function ChooseStoryChapter() {
 
-  const [stories, setStories] = useState([]);
-
+  const [stories, setStories] = useState<any[]>([]);
   useEffect(() => {
     const fetchMyStories = async () => {
-      const user = await supabase.auth.getUser();
-      if (!user.data) {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
         setStories([]);
         return;
       }
-      
+
       const { data } = await supabase
         .from('stories')
         .select('*')
-        .eq('author_id', user.data?.id);
-      
-      setStories(data);
+        .eq('author_id', userData.user.id);
+
+      setStories(data || []);
     };
 
     fetchMyStories();
   }, []);
+
 
   return (
     <div>
