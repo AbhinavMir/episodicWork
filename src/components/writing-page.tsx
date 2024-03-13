@@ -13,6 +13,7 @@ import { supabase } from "@/utils/supabase/server";
 import { useState, useEffect } from 'react';
 import { Navbar } from "@/components/navbar";
 import { useRouter } from 'next/navigation';
+import { toast } from "react-toastify";
 
 export function ChooseStoryChapter() {
   const [isLogged, setIsLogged] = useState(false);
@@ -84,7 +85,8 @@ export function ChooseStoryChapter() {
   console.log(selectedChapter);
 
   if (!isLogged) {
-    router.push('/feed');
+    toast.error('You need to be logged in to access this page');
+    router.push('/auth');
   }
   
   return (
