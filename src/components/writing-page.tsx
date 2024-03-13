@@ -14,7 +14,7 @@ import { useState, useEffect } from "react";
 import { Navbar } from "@/components/navbar";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-
+import { Input } from "./ui/input";
 export function ChooseStoryChapter() {
   const [isLogged, setIsLogged] = useState(false);
   const [stories, setStories] = useState<any[]>([]);
@@ -28,7 +28,7 @@ export function ChooseStoryChapter() {
       const session = await supabase.auth.getSession();
       const user = session.data?.session?.user.id;
       if (!user) {
-        router.push("/auth");
+        // router.push("/auth");
       }
     };
 
@@ -95,6 +95,16 @@ export function ChooseStoryChapter() {
                 {story.title}
               </DropdownMenuItem>
             ))}
+            <DropdownMenuLabel>New Story</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Input
+                  type="text"
+                  placeholder="Story Title"
+                  className="w-full"
+                />
+
+              </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
