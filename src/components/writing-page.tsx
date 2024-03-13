@@ -12,14 +12,21 @@ import {
 import { supabase } from "@/utils/supabase/server";
 import { useState, useEffect } from 'react';
 import { Navbar } from "@/components/navbar";
+import { useRouter } from 'next/navigation';
 
 export function ChooseStoryChapter() {
-
+  const [isLogged, setIsLogged] = useState(false);
   const [stories, setStories] = useState<any[]>([]);
   const [selectedStory, setSelectedStory] = useState<any>("Story");
   const [selectedChapter, setSelectedChapter] = useState<any>("Chapter");
+  const router = useRouter();
 
   useEffect(() => {
+
+    const checkLogin = async () => {
+      const { data: user } = await supabase.auth.getUser();
+      setIsLogged(!!user);
+    };
 
     const setStateForStory = (story: string) => {
       setSelectedStory(story);
@@ -73,9 +80,13 @@ export function ChooseStoryChapter() {
 
     fetchMyStories();
   }, []);
-  
+
   console.log(selectedChapter);
 
+  if (!isLogged) {
+    router.push('/feed');
+  }
+  
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '300px' }}>
       <div className="mr-4"> {/* Add right margin to the first dropdown */}
