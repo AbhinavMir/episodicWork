@@ -68,7 +68,7 @@ export function Profile() {
         })
         .match({ user_id: user.id });
       if (!error) {
-        console.log("Profile updated successfully");
+        // console.log("Profile updated successfully");
         toast.success("Profile updated successfully");
       } else {
         toast.error("Failed to update profile: " + error.message);
@@ -76,9 +76,9 @@ export function Profile() {
     }
   };
 
-  console.log(passwords.oldPassword, passwords.newPassword);
+  // console.log(passwords.oldPassword, passwords.newPassword);
   const changePassword = async () => {
-    console.log("changePassword");
+    // console.log("changePassword");
     const {
       data: { user },
       error: getUserError,
@@ -88,7 +88,7 @@ export function Profile() {
         password: passwords.newPassword,
       });
       if (!error) {
-        console.log("Password updated successfully");
+        // console.log("Password updated successfully");
         toast.success("Password updated successfully");
       } else {
         toast.error("Failed to update password: " + error.message);

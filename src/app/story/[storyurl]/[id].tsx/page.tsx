@@ -17,7 +17,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     .single();
 
                 if (error) throw error;
-                console.log(data);
+                // console.log(data);
             } catch (error) {
                 console.error(error);
             }

@@ -16,12 +16,14 @@ export function Navbar() {
   const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
-    const checkUser = async () => {
-      const session = supabase.auth.getSession();
-      setLoggedIn(!!session);
-    };
-    checkUser();
-  }, []);
+  const checkUser = async () => {
+    const { data: session } = await supabase.auth.getSession();
+    // console.log(session);
+    setLoggedIn(!!session);
+  };
+  checkUser();
+}, []);
+
 
   async function signOut() {
     await supabase.auth.signOut();

@@ -10,9 +10,9 @@ import {
   DropdownMenu,
 } from "@/components/ui/dropdown-menu";
 import { supabase } from "@/utils/supabase/server";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/navbar";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 export function ChooseStoryChapter() {
@@ -23,15 +23,18 @@ export function ChooseStoryChapter() {
   const router = useRouter();
 
   useEffect(() => {
-
     const checkLogin = async () => {
-      const { data: user } = await supabase.auth.getUser();
-      setIsLogged(!!user);
+      const session = await supabase.auth.getSession();
+      const user = session.data?.session?.user.id;
+      // console.log(user?.length);
+      if (!user) {
+        router.push("/auth");
+      }
     };
 
     const setStateForStory = (story: string) => {
       setSelectedStory(story);
-    }
+    };
     const fetchMyStories = async () => {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) {
@@ -39,16 +42,15 @@ export function ChooseStoryChapter() {
         return;
       }
       const { data: authorData } = await supabase
-        .from('authors')
-        .select('author_id')
-        .eq('user_id', userData.user.id)
+        .from("authors")
+        .select("author_id")
+        .eq("user_id", userData.user.id)
         .single();
 
       const { data: storiesData } = await supabase
-        .from('stories')
-        .select('*')
-        .eq('author_id', authorData?.author_id);
-
+        .from("stories")
+        .select("*")
+        .eq("author_id", authorData?.author_id);
 
       setStories(storiesData || []);
     };
@@ -60,38 +62,42 @@ export function ChooseStoryChapter() {
         return;
       }
       const { data: authorData } = await supabase
-        .from('authors')
-        .select('author_id')
-        .eq('user_id', userData.user.id)
+        .from("authors")
+        .select("author_id")
+        .eq("user_id", userData.user.id)
         .single();
 
       const { data: storiesData } = await supabase
-        .from('stories')
-        .select('*')
-        .eq('author_id', authorData?.author_id);
+        .from("stories")
+        .select("*")
+        .eq("author_id", authorData?.author_id);
 
-      const selectedStoryData = storiesData?.find((storyData: any) => storyData.title === story);
+      const selectedStoryData = storiesData?.find(
+        (storyData: any) => storyData.title === story
+      );
       const { data: chaptersData } = await supabase
-        .from('chapters')
-        .select('*')
-        .eq('story_id', selectedStoryData?.id);
+        .from("chapters")
+        .select("*")
+        .eq("story_id", selectedStoryData?.id);
 
       setSelectedChapter(chaptersData || []);
     };
 
+    checkLogin();
     fetchMyStories();
   }, []);
 
-  console.log(selectedChapter);
-
-  if (!isLogged) {
-    toast.error('You need to be logged in to access this page');
-    router.push('/auth');
-  }
-  
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '300px' }}>
-      <div className="mr-4"> {/* Add right margin to the first dropdown */}
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        maxWidth: "300px",
+      }}
+    >
+      <div className="mr-4">
+        {" "}
+        {/* Add right margin to the first dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button className="h-8 w-8 rounded-full" size="sm" variant="ghost">
@@ -102,9 +108,13 @@ export function ChooseStoryChapter() {
             <DropdownMenuLabel>Choose Story</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {stories.map((story, index) => (
-              <DropdownMenuItem key={index} onClick={() => setSelectedStory(story.title)}>{story.title}</DropdownMenuItem>
+              <DropdownMenuItem
+                key={index}
+                onClick={() => setSelectedStory(story.title)}
+              >
+                {story.title}
+              </DropdownMenuItem>
             ))}
-
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -132,7 +142,6 @@ export function ChooseStoryChapter() {
 export function WritingPage() {
   return (
     <div className="flex flex-col h-screen">
-
       <Navbar />
       <header className="p-4 border-b">
         <div className="container flex items-center gap-4">
