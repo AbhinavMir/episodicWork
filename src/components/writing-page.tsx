@@ -27,8 +27,9 @@ export function ChooseStoryChapter() {
     const checkLogin = async () => {
       const session = await supabase.auth.getSession();
       const user = session.data?.session?.user.id;
+      console.log(user);
       if (!user) {
-        // router.push("/auth");
+        router.push("/auth");
       }
     };
 
