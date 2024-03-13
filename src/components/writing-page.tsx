@@ -19,6 +19,7 @@ export function ChooseStoryChapter() {
   const [isLogged, setIsLogged] = useState(false);
   const [stories, setStories] = useState<any[]>([]);
   const [selectedStory, setSelectedStory] = useState<any>("Story");
+  const [selectedStoryId, setSelectedStoryId] = useState<any>("");
   const [selectedChapter, setSelectedChapter] = useState<any>("Chapter");
   const router = useRouter();
 
@@ -31,9 +32,11 @@ export function ChooseStoryChapter() {
       }
     };
 
-    const setStateForStory = (story: string) => {
+    const setStateForStory = (story: string, storyId: string) => {
       setSelectedStory(story);
+      setSelectedStoryId(storyId);
     };
+
     const fetchMyStories = async () => {
       const { data: userData } = await supabase.auth.getUser();
       if (!userData.user) {
@@ -51,40 +54,18 @@ export function ChooseStoryChapter() {
         .select("*")
         .eq("author_id", authorData?.author_id);
 
+      console.log(storiesData);
       setStories(storiesData || []);
     };
 
-    const fetchChaptersForStory = async (story: string) => {
-      const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) {
-        setStories([]);
-        return;
-      }
-      const { data: authorData } = await supabase
-        .from("authors")
-        .select("author_id")
-        .eq("user_id", userData.user.id)
-        .single();
-
-      const { data: storiesData } = await supabase
-        .from("stories")
-        .select("*")
-        .eq("author_id", authorData?.author_id);
-
-      const selectedStoryData = storiesData?.find(
-        (storyData: any) => storyData.title === story
-      );
-      const { data: chaptersData } = await supabase
-        .from("chapters")
-        .select("*")
-        .eq("story_id", selectedStoryData?.id);
-
-      setSelectedChapter(chaptersData || []);
+    const fetchChaptersForStory = async (storyId: string) => {
     };
 
     checkLogin();
     fetchMyStories();
   }, []);
+
+  console.log(selectedChapter);
 
   return (
     <div

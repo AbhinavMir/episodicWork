@@ -34,10 +34,10 @@ export function Navbar() {
         .eq("user_id", user_id);
 
       if (error) {
-        console.log("error", error);
+        // console.log("error", error);
       }
       if (data) {
-        console.log(data);
+        // console.log(data);
         setUserName(data[0].name);
       }
     };
