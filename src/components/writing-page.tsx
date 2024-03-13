@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { JSX, SVGProps } from "react";
+import { JSX, JSXElementConstructor, Key, PromiseLikeOfReactNode, ReactElement, ReactNode, ReactPortal, SVGProps } from "react";
 import {
   DropdownMenuTrigger,
   DropdownMenuLabel,
@@ -16,27 +16,45 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { Input } from "./ui/input";
 export function ChooseStoryChapter() {
-  const [isLogged, setIsLogged] = useState(false);
   const [stories, setStories] = useState<any[]>([]);
   const [selectedStory, setSelectedStory] = useState<any>("Story");
-  const [selectedStoryId, setSelectedStoryId] = useState<any>("");
-  const [selectedChapter, setSelectedChapter] = useState<any>("Chapter");
+  const [chapters, setChapters] = useState<any[]>([]);
+  const [selectedChapter, setSelectedChapter] = useState<any>();
+  const [chapterNames, setChapterNames] = useState<any[]>([]);
   const router = useRouter();
 
   useEffect(() => {
     const checkLogin = async () => {
       const session = await supabase.auth.getSession();
       const user = session.data?.session?.user.id;
-      console.log(user);
       if (!user) {
         router.push("/auth");
       }
     };
 
-    const setStateForStory = (story: string, storyId: string) => {
-      setSelectedStory(story);
-      setSelectedStoryId(storyId);
-    };
+
+    const fetchChapterNameFromId = async (id: string) => {
+      try {
+        const { data: chapterData } = await supabase
+          .from("chapters")
+          .select("*")
+          .eq("chapter_id", id)
+          .single();
+        setSelectedChapter(chapterData?.title);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    const fetchChapterNamesForAllChapters = async () => {
+      console.log("Fetching chapter names for all chapters")
+      const chapter_ids = stories[0]?.chapters || [];
+      console.log(chapter_ids);
+      chapter_ids.forEach((chapter_id: string) => {
+        console.log(...chapterNames, fetchChapterNameFromId(chapter_id))
+        setChapterNames([...chapterNames, fetchChapterNameFromId(chapter_id)]);
+      });
+    }
 
     const fetchMyStories = async () => {
       const { data: userData } = await supabase.auth.getUser();
@@ -55,18 +73,19 @@ export function ChooseStoryChapter() {
         .select("*")
         .eq("author_id", authorData?.author_id);
 
-      console.log(storiesData);
       setStories(storiesData || []);
-    };
-
-    const fetchChaptersForStory = async (storyId: string) => {
+      if (storiesData) {
+        const chapter_ids = storiesData[0]?.chapters || [];
+        setChapters(chapter_ids);
+      } else {
+        setChapters([]);
+      }
     };
 
     checkLogin();
     fetchMyStories();
+    fetchChapterNamesForAllChapters();
   }, []);
-
-  console.log(selectedChapter);
 
   return (
     <div
@@ -98,14 +117,14 @@ export function ChooseStoryChapter() {
             ))}
             <DropdownMenuLabel>New Story</DropdownMenuLabel>
             <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <Input
-                  type="text"
-                  placeholder="Story Title"
-                  className="w-full"
-                />
+            <DropdownMenuItem>
+              <Input
+                type="text"
+                placeholder="Story Title"
+                className="w-full"
+              />
 
-              </DropdownMenuItem>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
@@ -113,16 +132,25 @@ export function ChooseStoryChapter() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button className="h-8 w-8 rounded-full" size="sm" variant="ghost">
-              <div>Toggle</div>
+              <div>Chapter</div>
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>Choose Chapter</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Team</DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
+
+            <DropdownMenuLabel>New Chapter</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+
+         
+            <DropdownMenuItem>
+              <Input
+                type="text"
+                placeholder="Chapter Title"
+                className="w-full"
+              />
+
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

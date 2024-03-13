@@ -13,7 +13,7 @@ export function Feed() {
         .from('stories')
         .select('*');
   
-      if (error) console.log('error', error);
+      if (error) console.log();
       else if (data) {
         const filteredData = data.filter(story => story.description && story.chapters?.length > 0);
         setChapters(filteredData);
