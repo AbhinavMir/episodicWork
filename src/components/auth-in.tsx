@@ -59,7 +59,7 @@ export function AuthIn() {
         "Invalid Credentials: Either your password or email was incorrect!"
       );
     } else {
-      toast.success("Success: You have successfully logged in!");
+      toast("Success: You have successfully logged in!");
       router.push('/feed'); 
     }
   }
