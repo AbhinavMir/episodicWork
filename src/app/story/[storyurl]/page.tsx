@@ -17,32 +17,7 @@ export default function Page({ params }: { params: { storyurl: string } }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function getChapters() {
-      try {
-        const { data, error } = await supabase
-          .from('stories')
-          .select(`
-            chapters (
-              title,
-              content,
-              chapter_number
-            )
-          `)
-          .eq('storyurl', params.storyurl)
-          .single();
-
-        if (error) throw error;
-        if (data && data.chapters) {
-          const sortedChapters = data.chapters.sort((a, b) => a.chapter_number - b.chapter_number);
-          setChapters(sortedChapters);
-        }
-        
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    }
+    async function getChapters() {}
 
     getChapters();
   }, [params.storyurl]);
