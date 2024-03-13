@@ -45,17 +45,36 @@ export function ChooseStoryChapter() {
       setStories(storiesData || []);
     };
 
-    const fetchChaptersForStory = async (storyId: string) => {
-      const { data: chapterData } = await supabase
+    const fetchChaptersForStory = async (story: string) => {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) {
+        setStories([]);
+        return;
+      }
+      const { data: authorData } = await supabase
+        .from('authors')
+        .select('author_id')
+        .eq('user_id', userData.user.id)
+        .single();
+
+      const { data: storiesData } = await supabase
+        .from('stories')
+        .select('*')
+        .eq('author_id', authorData?.author_id);
+
+      const selectedStoryData = storiesData?.find((storyData: any) => storyData.title === story);
+      const { data: chaptersData } = await supabase
         .from('chapters')
         .select('*')
-        .eq('story_id', storyId);
+        .eq('story_id', selectedStoryData?.id);
 
-      console.log(chapterData);
-    }
+      setSelectedChapter(chaptersData || []);
+    };
 
     fetchMyStories();
   }, []);
+  
+  console.log(selectedChapter);
 
   return (
     <div style={{ display: 'flex', justifyContent: 'space-between', maxWidth: '300px' }}>
