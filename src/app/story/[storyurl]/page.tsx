@@ -42,7 +42,7 @@ export default function Page({ params }: { params: { storyurl: string } }) {
   const [chapters, setChapters] = useState<Chapter[]>([]);
   const [loading, setLoading] = useState(true);
 
-  
+
   useEffect(() => {
     async function getChapters() {
       const storyId = await fetchStoryIdFromUrl(params.storyurl);
@@ -63,20 +63,23 @@ export default function Page({ params }: { params: { storyurl: string } }) {
   return (
     <div>
       <Navbar />
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px', gap: '20px' }}>
         {loading ? (
           <LoadingSpinner />
         ) : (
-          chapters.map((chapter, index) => (
-            <ChapterCard
-              key={index}
-              title={chapter.title}
-              description={chapter.content}
-              chapter={`Chapter ${chapter.chapter_number}`}
-            />
-          ))
+          <div style={{ display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '800px', gap: '20px' }}>
+            {chapters.map((chapter, index) => (
+              <ChapterCard
+                key={index}
+                title={chapter.title}
+                description={chapter.content}
+                chapter={`Chapter ${chapter.chapter_number}`}
+              />
+            ))}
+          </div>
         )}
       </div>
     </div>
+
   );
 }
