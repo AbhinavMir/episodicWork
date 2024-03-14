@@ -63,7 +63,7 @@ export default function Page({ params }: { params: { storyurl: string } }) {
   return (
     <div>
       <Navbar />
-      <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px', gap: '20px' }}>
+      <div style={{ display: 'flex-center', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px', gap: '20px' }}>
         {loading ? (
           <LoadingSpinner />
         ) : (
@@ -74,6 +74,7 @@ export default function Page({ params }: { params: { storyurl: string } }) {
                 title={chapter.title}
                 description={chapter.content}
                 chapter={`Chapter ${chapter.chapter_number}`}
+                link = {`/story/${params.storyurl}/${chapter.chapter_number}`}
               />
             ))}
           </div>

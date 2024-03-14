@@ -1,13 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { CardContent, Card } from "@/components/ui/card";
-
+import Link from "next/link";
 interface ChapterCardProps {
   title: string;
   description: string;
   chapter: string;
+  link: string;
 }
 
-export function ChapterCard({ title, description, chapter }: ChapterCardProps) {
+export function ChapterCard({ title, description, chapter, link }: ChapterCardProps) {
   return (
     <div>
       <Card className="w-full max-w-lg p-5 space-y-4">
@@ -21,7 +22,9 @@ export function ChapterCard({ title, description, chapter }: ChapterCardProps) {
           <div className="flex-1" />
           <div className="flex items-center space-x-2">
             <p className="text-sm font-medium">{chapter}</p>
+            <Link href={link}>
             <Button size="sm">Read</Button>
+            </Link>
           </div>
         </CardContent>
       </Card>
