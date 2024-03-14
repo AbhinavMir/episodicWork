@@ -8,7 +8,7 @@ import { Navbar } from "@/components/navbar";
 export default function Page({ params }: { params: { storyurl: string, id: string } }) {
     const [chap, setChap] = useState(null);
     const url = '/' + params.storyurl + '/' + params.id;
-    console.log(url);
+    // console.log(url);
     useEffect(() => {
         async function getChapter() {
             try {
@@ -29,7 +29,7 @@ export default function Page({ params }: { params: { storyurl: string, id: strin
     }
         , [params.id]);
 
-    console.log(chap);
+    // console.log(chap);
 
     if (chap) {
         return (
