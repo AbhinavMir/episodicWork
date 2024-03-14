@@ -5,16 +5,17 @@ import { supabase } from "@/utils/supabase/server";
 import { LoadingSpinner } from "@/components/ui/spinner";
 import { Navbar } from "@/components/navbar";
 
-export default function Page({ params }: { params: { id: string } }) {
+export default function Page({ params }: { params: { storyurl: string, id: string } }) {
     const [chap, setChap] = useState(null);
-
+    const url = '/' + params.storyurl + '/' + params.id;
+    console.log(url);
     useEffect(() => {
         async function getChapter() {
             try {
                 const { data, error } = await supabase
                     .from('chapters')
                     .select('*')
-                    .eq('chapter_id', params.id)
+                    .eq('url', url)
                     .single();
 
                 if (error) throw error;
