@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/utils/supabase/server";
 import { LoadingSpinner } from "@/components/ui/spinner";
 import { Navbar } from "@/components/navbar";
+import ReactMarkdown from 'react-markdown';
+import { ContentState, convertFromRaw, EditorState } from 'draft-js';
 
 export default function Page({ params }: { params: { storyurl: string, id: string } }) {
     const [chap, setChap] = useState(null);
@@ -38,7 +40,7 @@ export default function Page({ params }: { params: { storyurl: string, id: strin
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px' }}>
                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', padding: '20px' }}
                     > <h1>{(chap as { title: string }).title}</h1></div>
-                    <p>{(chap as { content: string }).content}</p>
+                      <ReactMarkdown>{(chap as { content: string }).content}</ReactMarkdown>
                 </div>
             </div>
         );
