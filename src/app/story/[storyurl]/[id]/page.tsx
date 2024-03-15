@@ -5,7 +5,6 @@ import { supabase } from "@/utils/supabase/server";
 import { LoadingSpinner } from "@/components/ui/spinner";
 import { Navbar } from "@/components/navbar";
 import ReactMarkdown from 'react-markdown';
-import { ContentState, convertFromRaw, EditorState } from 'draft-js';
 
 export default function Page({ params }: { params: { storyurl: string, id: string } }) {
     const [chap, setChap] = useState(null);
