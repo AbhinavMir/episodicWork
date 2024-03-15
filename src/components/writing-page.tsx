@@ -31,7 +31,7 @@ export function WritingPage() {
   const [chapters, setChapters] = useState<any[]>([]);
   const [selectedChapter, setSelectedChapter] = useState<any>(null);
   const router = useRouter();
-
+  
   useEffect(() => {
     const checkLogin = async () => {
       const session = await supabase.auth.getSession();
