@@ -15,12 +15,11 @@ import { Navbar } from "@/components/navbar";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { Input } from "./ui/input";
-export function ChooseStoryChapter() {
+
+
+export function WritingPage() {
+
   const [stories, setStories] = useState<any[]>([]);
-  const [selectedStory, setSelectedStory] = useState<any>("Story");
-  const [chapters, setChapters] = useState<any[]>([]);
-  const [selectedChapter, setSelectedChapter] = useState<any>();
-  const [chapterNames, setChapterNames] = useState<any[]>([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -32,133 +31,34 @@ export function ChooseStoryChapter() {
       }
     };
 
-
-    const fetchChapterNameFromId = async (id: string) => {
-      try {
-        const { data: chapterData } = await supabase
-          .from("chapters")
-          .select("*")
-          .eq("chapter_id", id)
-          .single();
-        setSelectedChapter(chapterData?.title);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-
-    const fetchChapterNamesForAllChapters = async () => {
-      console.log("Fetching chapter names for all chapters")
-      const chapter_ids = stories[0]?.chapters || [];
-      console.log(chapter_ids);
-      chapter_ids.forEach((chapter_id: string) => {
-        console.log(...chapterNames, fetchChapterNameFromId(chapter_id))
-        setChapterNames([...chapterNames, fetchChapterNameFromId(chapter_id)]);
-      });
-    }
-
-    const fetchMyStories = async () => {
+    const fetchUserStories = async () => {
+      let authorData;
       const { data: userData } = await supabase.auth.getUser();
-      if (!userData.user) {
-        setStories([]);
-        return;
-      }
-      const { data: authorData } = await supabase
+      const { data, error } = await supabase
         .from("authors")
-        .select("author_id")
-        .eq("user_id", userData.user.id)
-        .single();
-
-      const { data: storiesData } = await supabase
-        .from("stories")
         .select("*")
-        .eq("author_id", authorData?.author_id);
-
-      setStories(storiesData || []);
-      if (storiesData) {
-        const chapter_ids = storiesData[0]?.chapters || [];
-        setChapters(chapter_ids);
-      } else {
-        setChapters([]);
+        .eq("user_id", userData?.user?.id);
+      if (!error) {
+        const [authorData] = data;
+        const { data: stories, error: storiesError } = await supabase
+          .from("stories")
+          .select("*")
+          .eq("author_id", authorData?.author_id);
+        if (!storiesError) {
+          setStories(stories);
+        }
       }
-    };
 
+      if (error) {
+        toast.error(error.message);
+      }
+    }
+
+    fetchUserStories();
     checkLogin();
-    fetchMyStories();
-    fetchChapterNamesForAllChapters();
   }, []);
 
-  return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        maxWidth: "300px",
-      }}
-    >
-      <div className="mr-4">
-        {" "}
-        {/* Add right margin to the first dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="h-8 w-8 rounded-full" size="sm" variant="ghost">
-              <div>{selectedStory}</div>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>Choose Story</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {stories.map((story, index) => (
-              <DropdownMenuItem
-                key={index}
-                onClick={() => setSelectedStory(story.title)}
-              >
-                {story.title}
-              </DropdownMenuItem>
-            ))}
-            <DropdownMenuLabel>New Story</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Input
-                type="text"
-                placeholder="Story Title"
-                className="w-full"
-              />
-
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      <div>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button className="h-8 w-8 rounded-full" size="sm" variant="ghost">
-              <div>Chapter</div>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>Choose Chapter</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-
-            <DropdownMenuLabel>New Chapter</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-
-         
-            <DropdownMenuItem>
-              <Input
-                type="text"
-                placeholder="Chapter Title"
-                className="w-full"
-              />
-
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </div>
-  );
-}
-
-export function WritingPage() {
+  console.log(stories);
   return (
     <div className="flex flex-col h-screen">
       <Navbar />
@@ -175,7 +75,6 @@ export function WritingPage() {
               defaultValue="hey"
             />
           </h1>
-          <ChooseStoryChapter /> {/* Added ChooseStoryChapter component here */}
           <div className="ml-auto flex 4">
             <Button className="text-sm" variant="outline">
               Save
