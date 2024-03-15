@@ -65,7 +65,7 @@ export function WritingPage() {
     };
 
     const fetchChapterForSelectedStory = async () => {
-      console.log("YUJK")
+      // console.log("YUJK")
       const { data, error } = await supabase
         .from("chapters")
         .select("*")
@@ -84,8 +84,8 @@ export function WritingPage() {
   }, [selectedStory]);
 
   // console.log(stories);
-  console.log(selectedStory?.story_id);
-  console.log("Chapter", chapters);
+  // console.log(selectedStory?.story_id);
+  // console.log("Chapter", chapters);
 
   return (
     <div className="flex flex-col h-screen">
@@ -158,35 +158,7 @@ export function WritingPage() {
           </div>
         </div>
       </main>
-      <footer className="p-4 border-t">
-        <div className="container flex items-center gap-4">
-          <div className="flex items-center gap-4">
-            <Button className="rounded-full" size="icon" variant="ghost">
-              <ImageIcon className="w-5 h-5" />
-              <span className="sr-only">Insert image</span>
-            </Button>
-            <Button className="rounded-full" size="icon" variant="ghost">
-              <FileIcon className="w-5 h-5" />
-              <span className="sr-only">Insert file</span>
-            </Button>
-          </div>
-          <div className="ml-auto flex items-center gap-4">
-            <span className="text-sm text-gray-500">0 words</span>
-            <Button className="rounded-full" size="icon" variant="outline">
-              <BoldIcon className="w-4 h-4" />
-              <span className="sr-only">Bold</span>
-            </Button>
-            <Button className="rounded-full" size="icon" variant="outline">
-              <ItalicIcon className="w-4 h-4" />
-              <span className="sr-only">Italic</span>
-            </Button>
-            <Button className="rounded-full" size="icon" variant="outline">
-              <UnderlineIcon className="w-4 h-4" />
-              <span className="sr-only">Underline</span>
-            </Button>
-          </div>
-        </div>
-      </footer>
+    
     </div>
   );
 }
