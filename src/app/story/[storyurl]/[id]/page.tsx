@@ -9,6 +9,7 @@ import ReactMarkdown from 'react-markdown';
 export default function Page({ params }: { params: { storyurl: string, id: string } }) {
     const [chap, setChap] = useState(null);
     const url = '/' + params.storyurl + '/' + params.id;
+    
     // console.log(url);
     useEffect(() => {
         async function getChapter() {

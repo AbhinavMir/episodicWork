@@ -1,6 +1,15 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { JSX, JSXElementConstructor, Key, PromiseLikeOfReactNode, ReactElement, ReactNode, ReactPortal, SVGProps } from "react";
+import {
+  JSX,
+  JSXElementConstructor,
+  Key,
+  PromiseLikeOfReactNode,
+  ReactElement,
+  ReactNode,
+  ReactPortal,
+  SVGProps,
+} from "react";
 import {
   DropdownMenuTrigger,
   DropdownMenuLabel,
@@ -16,10 +25,11 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { Input } from "./ui/input";
 
-
 export function WritingPage() {
-
   const [stories, setStories] = useState<any[]>([]);
+  const [selectedStory, setSelectedStory] = useState<any>(null);
+  const [chapters, setChapters] = useState<any[]>([]);
+  const [selectedChapter, setSelectedChapter] = useState<any>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -52,13 +62,31 @@ export function WritingPage() {
       if (error) {
         toast.error(error.message);
       }
-    }
+    };
 
-    fetchUserStories();
+    const fetchChapterForSelectedStory = async () => {
+      console.log("YUJK")
+      const { data, error } = await supabase
+        .from("chapters")
+        .select("*")
+        .eq("story_id", 2124);
+
+      if (!error) {
+        setChapters(data);
+      } 
+    };
+
     checkLogin();
-  }, []);
+    fetchUserStories();
+    if (selectedStory) {
+      fetchChapterForSelectedStory();
+    }
+  }, [selectedStory]);
 
-  console.log(stories);
+  // console.log(stories);
+  console.log(selectedStory?.story_id);
+  console.log("Chapter", chapters);
+
   return (
     <div className="flex flex-col h-screen">
       <Navbar />
@@ -75,6 +103,39 @@ export function WritingPage() {
               defaultValue="hey"
             />
           </h1>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button>
+                {selectedStory ? selectedStory.title : "Choose Story"}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {stories.map((story) => (
+                <DropdownMenuItem
+                  key={story.id}
+                  onSelect={() => setSelectedStory(story)}
+                >
+                  {story.title}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button>{selectedChapter ? selectedChapter.title : "Choose Chapter"}</Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent>
+    {chapters.map((chapter) => (
+      <DropdownMenuItem
+        key={chapter.id}
+        onSelect={() => setSelectedChapter(chapter)}
+      >
+        {chapter.title}
+      </DropdownMenuItem>
+    ))}
+  </DropdownMenuContent>
+</DropdownMenu>
+
           <div className="ml-auto flex 4">
             <Button className="text-sm" variant="outline">
               Save
