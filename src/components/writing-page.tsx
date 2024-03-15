@@ -151,8 +151,8 @@ export function WritingPage() {
               <textarea
                 className="w-full h-full focus:outline-none bg-black"
                 autoFocus
+                placeholder="Start writing..."
               >
-                Write something...
               </textarea>
             </div>
           </div>
