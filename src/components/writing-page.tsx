@@ -69,7 +69,7 @@ export function WritingPage() {
       const { data, error } = await supabase
         .from("chapters")
         .select("*")
-        .eq("story_id", 2124);
+        .eq("story_id", selectedStory?.story_id);
 
       if (!error) {
         setChapters(data);
