@@ -31,6 +31,7 @@ export function WritingPage() {
   const [chapters, setChapters] = useState<any[]>([]);
   const [selectedChapter, setSelectedChapter] = useState<any>(null);
   const [newStoryTitle, setNewStoryTitle] = useState("");
+  const [newChapterTitle, setNewChapterTitle] = useState("");
   const router = useRouter();
 
   const createNewStory = async (storyTitle: string) => {
@@ -47,6 +48,30 @@ export function WritingPage() {
       if (!storyError) {
         // setStories((prev) => [...prev, storyData]);
         toast.success("Story created successfully");
+      }
+    }
+  };
+
+  const createNewChapter = async (chapterTitle: string) => {
+    const { data: userData } = await supabase.auth.getUser();
+    const { data, error } = await supabase
+      .from("authors")
+      .select("*")
+      .eq("user_id", userData?.user?.id);
+    if (!error) {
+      const [authorData] = data;
+      const { data: chapterData, error: chapterError } = await supabase
+        .from("chapters")
+        .insert([
+          {
+            title: chapterTitle,
+            story_id: selectedStory?.story_id,
+            author_id: authorData?.author_id,
+          },
+        ]);
+      if (!chapterError) {
+        setChapters((prev) => [...prev, chapterData]);
+        toast.success("Chapter created successfully");
       }
     }
   };
@@ -172,6 +197,24 @@ export function WritingPage() {
                   {chapter.title}
                 </DropdownMenuItem>
               ))}
+
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
+                <Input
+                  placeholder="Create new chapter"
+                  value={newChapterTitle}
+                  onChange={(e) => setNewChapterTitle(e.target.value)}
+                  onClick={(event) => event.stopPropagation()}
+                />
+                <Button
+                  onClick={() => {
+                    createNewChapter(newChapterTitle);
+                    setNewChapterTitle(""); // Reset the input after creating a chapter
+                  }}
+                >
+                  Create
+                </Button>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
