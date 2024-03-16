@@ -30,8 +30,27 @@ export function WritingPage() {
   const [selectedStory, setSelectedStory] = useState<any>(null);
   const [chapters, setChapters] = useState<any[]>([]);
   const [selectedChapter, setSelectedChapter] = useState<any>(null);
+  const [newStoryTitle, setNewStoryTitle] = useState("");
   const router = useRouter();
-  
+
+  const createNewStory = async (storyTitle: string) => {
+    const { data: userData } = await supabase.auth.getUser();
+    const { data, error } = await supabase
+      .from("authors")
+      .select("*")
+      .eq("user_id", userData?.user?.id);
+    if (!error) {
+      const [authorData] = data;
+      const { data: storyData, error: storyError } = await supabase
+        .from("stories")
+        .insert([{ title: storyTitle, author_id: authorData?.author_id }]);
+      if (!storyError) {
+        // setStories((prev) => [...prev, storyData]);
+        toast.success("Story created successfully");
+      }
+    }
+  };
+
   useEffect(() => {
     const checkLogin = async () => {
       const session = await supabase.auth.getSession();
@@ -73,7 +92,7 @@ export function WritingPage() {
 
       if (!error) {
         setChapters(data);
-      } 
+      }
     };
 
     checkLogin();
@@ -118,23 +137,43 @@ export function WritingPage() {
                   {story.title}
                 </DropdownMenuItem>
               ))}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
+                <Input
+                  placeholder="Create new story"
+                  value={newStoryTitle}
+                  onChange={(e) => setNewStoryTitle(e.target.value)}
+                  onClick={(event) => event.stopPropagation()}
+                />
+                <Button
+                  onClick={() => {
+                    createNewStory(newStoryTitle);
+                    setNewStoryTitle(""); // Reset the input after creating a story
+                  }}
+                >
+                  Create
+                </Button>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
+
           <DropdownMenu>
-  <DropdownMenuTrigger asChild>
-    <Button>{selectedChapter ? selectedChapter.title : "Choose Chapter"}</Button>
-  </DropdownMenuTrigger>
-  <DropdownMenuContent>
-    {chapters.map((chapter) => (
-      <DropdownMenuItem
-        key={chapter.id}
-        onSelect={() => setSelectedChapter(chapter)}
-      >
-        {chapter.title}
-      </DropdownMenuItem>
-    ))}
-  </DropdownMenuContent>
-</DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button>
+                {selectedChapter ? selectedChapter.title : "Choose Chapter"}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {chapters.map((chapter) => (
+                <DropdownMenuItem
+                  key={chapter.id}
+                  onSelect={() => setSelectedChapter(chapter)}
+                >
+                  {chapter.title}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <div className="ml-auto flex 4">
             <Button className="text-sm" variant="outline">
@@ -152,13 +191,11 @@ export function WritingPage() {
                 className="w-full h-full focus:outline-none bg-black"
                 autoFocus
                 placeholder="Start writing..."
-              >
-              </textarea>
+              ></textarea>
             </div>
           </div>
         </div>
       </main>
-    
     </div>
   );
 }
