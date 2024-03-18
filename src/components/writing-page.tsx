@@ -24,6 +24,7 @@ import { Navbar } from "@/components/navbar";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { Input } from "./ui/input";
+import { LoadingSpinner } from "./ui/spinner";
 
 export function WritingPage() {
   const [stories, setStories] = useState<any[]>([]);
@@ -32,9 +33,12 @@ export function WritingPage() {
   const [selectedChapter, setSelectedChapter] = useState<any>(null);
   const [newStoryTitle, setNewStoryTitle] = useState("");
   const [newChapterTitle, setNewChapterTitle] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isCreatingStory, setIsCreatingStory] = useState(false);
   const router = useRouter();
 
   const createNewStory = async (storyTitle: string) => {
+    setIsCreatingStory(true);
     const { data: userData } = await supabase.auth.getUser();
     const { data, error } = await supabase
       .from("authors")
@@ -46,18 +50,22 @@ export function WritingPage() {
         .from("stories")
         .insert([{ title: storyTitle, author_id: authorData?.author_id }]);
       if (!storyError) {
+        setIsCreatingStory(false);
         // setStories((prev) => [...prev, storyData]);
+        // setSelectedStory(storyData); // Set the newly created story as selected
         toast.success("Story created successfully");
       }
     }
   };
 
   const createNewChapter = async (chapterTitle: string) => {
+    setIsCreatingStory(true);
     const { data: userData } = await supabase.auth.getUser();
     const { data, error } = await supabase
       .from("authors")
       .select("*")
       .eq("user_id", userData?.user?.id);
+    console.log(data);
     if (!error) {
       const [authorData] = data;
       const { data: chapterData, error: chapterError } = await supabase
@@ -66,11 +74,13 @@ export function WritingPage() {
           {
             title: chapterTitle,
             story_id: selectedStory?.story_id,
-            author_id: authorData?.author_id,
           },
         ]);
+
+        console.log(chapterData);
       if (!chapterError) {
-        setChapters((prev) => [...prev, chapterData]);
+        setIsCreatingStory(false);
+        // setChapters((prev) => [...prev, chapterData]);
         toast.success("Chapter created successfully");
       }
     }
@@ -86,6 +96,7 @@ export function WritingPage() {
     };
 
     const fetchUserStories = async () => {
+      // setIsLoading(true);
       let authorData;
       const { data: userData } = await supabase.auth.getUser();
       const { data, error } = await supabase
@@ -98,9 +109,12 @@ export function WritingPage() {
           .from("stories")
           .select("*")
           .eq("author_id", authorData?.author_id);
+        
         if (!storiesError) {
           setStories(stories);
         }
+
+        setIsLoading(false);
       }
 
       if (error) {
@@ -109,13 +123,14 @@ export function WritingPage() {
     };
 
     const fetchChapterForSelectedStory = async () => {
-      // console.log("YUJK")
+      // setIsLoading(true);
       const { data, error } = await supabase
         .from("chapters")
         .select("*")
         .eq("story_id", selectedStory?.story_id);
-
+      console.log(data);
       if (!error) {
+        setIsLoading(false);
         setChapters(data);
       }
     };
@@ -125,11 +140,7 @@ export function WritingPage() {
     if (selectedStory) {
       fetchChapterForSelectedStory();
     }
-  }, [selectedStory]);
-
-  // console.log(stories);
-  // console.log(selectedStory?.story_id);
-  // console.log("Chapter", chapters);
+  }, [stories, selectedStory, chapters, selectedChapter]);
 
   return (
     <div className="flex flex-col h-screen">
@@ -154,31 +165,39 @@ export function WritingPage() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              {stories.map((story) => (
-                <DropdownMenuItem
-                  key={story.id}
-                  onSelect={() => setSelectedStory(story)}
-                >
-                  {story.title}
-                </DropdownMenuItem>
-              ))}
+              {isLoading ? (
+                <LoadingSpinner />
+              ) : (
+                stories.map((story) => (
+                  <DropdownMenuItem key={story.id} onSelect={() => setSelectedStory(story)}>
+                    {story.title}
+                  </DropdownMenuItem>
+                ))
+              )}
               <DropdownMenuSeparator />
               <DropdownMenuItem onSelect={(event) => event.preventDefault()}>
-                <Input
-                  placeholder="Create new story"
-                  value={newStoryTitle}
-                  onChange={(e) => setNewStoryTitle(e.target.value)}
-                  onClick={(event) => event.stopPropagation()}
-                />
-                <Button
-                  onClick={() => {
-                    createNewStory(newStoryTitle);
-                    setNewStoryTitle(""); // Reset the input after creating a story
-                  }}
-                >
-                  Create
-                </Button>
+                {isCreatingStory ? (
+                  <LoadingSpinner /> // Assume LoadingSpinner is a component you have
+                ) : (
+                  <>
+                    <Input
+                      placeholder="Create new story"
+                      value={newStoryTitle}
+                      onChange={(e) => setNewStoryTitle(e.target.value)}
+                      onClick={(event) => event.stopPropagation()}
+                    />
+                    <Button
+                      onClick={() => {
+                        createNewStory(newStoryTitle);
+                        setNewStoryTitle(""); // Reset the input after creating a story
+                      }}
+                    >
+                      Create
+                    </Button>
+                  </>
+                )}
               </DropdownMenuItem>
+
             </DropdownMenuContent>
           </DropdownMenu>
 
